@@ -1,0 +1,7 @@
+﻿  dz1p1.c
+c:\users\bogdan\documents\visual studio 2017\projects\trougaonamatricaasp1dz1_1\trougaonamatricaasp1dz1_1\dz1p1.c(82): warning C4101: 'arrayIndex': unreferenced local variable
+c:\users\bogdan\documents\visual studio 2017\projects\trougaonamatricaasp1dz1_1\trougaonamatricaasp1dz1_1\dz1p1.c(82): warning C4101: 'j': unreferenced local variable
+c:\users\bogdan\documents\visual studio 2017\projects\trougaonamatricaasp1dz1_1\trougaonamatricaasp1dz1_1\dz1p1.c(82): warning C4101: 'i': unreferenced local variable
+c:\users\bogdan\documents\visual studio 2017\projects\trougaonamatricaasp1dz1_1\trougaonamatricaasp1dz1_1\dz1p1.c(117): warning C4700: uninitialized local variable 'matrixSize' used
+  TrougaonaMatricaASP1dz1_1.vcxproj -> C:\Users\Bogdan\Documents\Visual Studio 2017\Projects\TrougaonaMatricaASP1dz1_1\Debug\TrougaonaMatricaASP1dz1_1.exe
+  TrougaonaMatricaASP1dz1_1.vcxproj -> C:\Users\Bogdan\Documents\Visual Studio 2017\Projects\TrougaonaMatricaASP1dz1_1\Debug\TrougaonaMatricaASP1dz1_1.pdb (Partial PDB)
