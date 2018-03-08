@@ -13,7 +13,7 @@ int *matrixAllocation(int matrixSize) {
 
 
 int isMatrixIndexOutOfRange(int matrixSize, int i, int j) {
-	return (i >= matrixSize || j >= matrixSize);
+	return (i >= matrixSize || j >= matrixSize || i < 0 || j < 0);
 }
 
 
@@ -29,7 +29,9 @@ int memoryLocationsSaved(int matrixSize) {
 
 int isCorrectIntInput(char *s) {
 	int i;
-	for (i = 0; s[i] != '\0'; i++) {
+	if (s[0] == '-') i = 1;
+	else i = 0;
+	for (; s[i] != '\0'; i++) {
 		if (s[i] > '9' || s[i] < '0') return 0;
 	}
 	return 1;
@@ -39,9 +41,16 @@ int isCorrectIntInput(char *s) {
 int strToInt(char *s) {
 	int i;
 	int returnValue = 0;
-	for (i = 0; s[i] != '\0'; i++) {
+	int isNegative = 0;
+	if (s[0] == '-') {
+		i = 1;
+		isNegative = 1;
+	}
+	else i = 0;
+	for (; s[i] != '\0'; i++) {
 		returnValue = returnValue * 10 + (int)(s[i] - '0');
 	}
+	if (isNegative) returnValue = -returnValue;
 	return returnValue;
 }
 
@@ -62,6 +71,74 @@ int readInt() {
 }
 
 
+int *createMatrix(int *a, int *matrixSize) {
+	int n;
+	printf("Enter matrix dimensions as integer:\n");
+	n = readInt();
+	if (n > 0) {
+		*matrixSize = n * (n + 1) / 2;
+		a = matrixAllocation(*matrixSize);
+		*matrixSize = n;
+	}
+	else a = NULL;
+	return a;
+}
+
+
+void matrixInit(int *a, int matrixSize) {
+	int i, j;
+	for (i = 0; i < matrixSize; i++) {
+		for (j = i; j < matrixSize; j++) {
+			printf("Input the [%d,%d] element:\n", i, j);
+			a[matrixIndicesToArrayIndex(matrixSize, i, j)] = readInt();
+		}
+	}
+	return;
+}
+
+
+void outputMatrix(int *a, int defaultValue, int matrixSize) {
+	int i, j;
+	for (i = 0; i < matrixSize; i++) {
+		for (j = 0; j < matrixSize; j++) {
+			if (i <= j) 
+				printf("%d ", a[matrixIndicesToArrayIndex(matrixSize, i, j)]);
+			else 
+				printf("%d ", defaultValue);
+		}
+		printf("\n");
+	}
+	return;
+}
+
+
+int getElement(int *a, int matrixSize, int i, int j, int defaultValue) {
+	return (i <= j) ? a[matrixIndicesToArrayIndex(matrixSize, i, j)] : defaultValue;
+}
+
+
+int getNumberOfNonDefaultValues(int *a, int matrixSize, int defaultValue) {
+	int i, j;
+	int numberOfNonDefaultValues = 0;
+	for (i = 0; i < matrixSize; i++) {
+		for (j = i; j < matrixSize; j++) {
+			if (a[matrixIndicesToArrayIndex(matrixSize, i, j)] != defaultValue) {
+				numberOfNonDefaultValues++;
+			}
+		}
+	}
+	return numberOfNonDefaultValues;
+}
+
+
+void readMatrixIndices(int *i, int *j) {
+	printf("Enter i (rows) index: ");
+	*i = readInt();
+	printf("Enter j (cols) index: ");
+	*j = readInt();
+}
+
+
 void printMenu() {
 	printf("1. Create and initialize matrix\n");
 	printf("2. Set default value of matrix\n");
@@ -78,11 +155,11 @@ void printMenu() {
 
 
 int main() {
-	int *a, defaultValue, matrixSize;
-	int i, j, arrayIndex;
+	int *a, matrixSize;
+	int defaultValue = 0;
+	int i, j;
 	int menuOption;
 	a = NULL;
-
 	while (1) {
 		printMenu();
 		menuOption = readInt();
@@ -92,7 +169,13 @@ int main() {
 				free(a);
 				a = NULL;
 			}
-			/* TODO: implement */
+			a = createMatrix(a, &matrixSize);
+			if (a != NULL) {
+				matrixInit(a, matrixSize);
+			}
+			else {
+				printf("Memory allocation failed, matrix not created\n");
+			}
 			break;
 		case 2:	// Set default value of matrix
 			if (a != NULL) {
@@ -101,20 +184,46 @@ int main() {
 			}
 			break;
 		case 3:	// Get element
-			/* TODO: implement */
+			if (a != NULL) {
+				readMatrixIndices(&i, &j);
+				if (isMatrixIndexOutOfRange(matrixSize, i, j)) {
+					printf("Index error, out of range\n");
+				}
+				else {
+					int elem;
+					elem = getElement(a, matrixSize, i, j, defaultValue);
+					printf("%d\n", elem);
+				}
+			}
 			break;
 		case 4:	// Set element value
-			/* TODO: implement */
+			if (a != NULL) {
+				readMatrixIndices(&i, &j);
+				if (isMatrixIndexOutOfRange(matrixSize, i, j)) {
+					printf("Index error, out of range\n");
+				}
+				else {
+					int elem;
+					elem = readInt();
+					a[matrixIndicesToArrayIndex(matrixSize, i, j)] = elem;
+				}
+			}
 			break;
 		case 5:	// Get number of non-default values
-			/* TODO: implement */
+			if (a != NULL) {
+				int temp;
+				temp = getNumberOfNonDefaultValues(a, matrixSize, defaultValue);
+				printf("Number of non-default values: %d\n", temp);
+			}
 			break;
 		case 6:	// Output matrix
-			/* TODO: implement */
+			if (a != NULL) {
+				outputMatrix(a, defaultValue, matrixSize);
+			}
 			break;
 		case 7:	// Calculate memory saved
 			if (a != NULL) {
-				printf("%d\n", memoryLocationsSaved(matrixSize));
+				printf("Memory saved: %d locations\n", memoryLocationsSaved(matrixSize));
 			}
 			break;
 		case 8:	// Delete matrix
